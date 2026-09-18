@@ -1,1 +1,1 @@
-CREATE DATABASE boilerplate_test;
+CREATE DATABASE cv_match_test;

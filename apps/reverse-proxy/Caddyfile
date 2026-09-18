@@ -1,15 +1,15 @@
-api.boilerplate.localhost {
+api.cvmatch.localhost {
 	reverse_proxy localhost:3000
 }
 
-app.boilerplate.localhost {
+app.cvmatch.localhost {
 	reverse_proxy localhost:5173
 }
 
-mailbox.boilerplate.localhost {
+mailbox.cvmatch.localhost {
 	reverse_proxy localhost:8025
 }
 
-storage.boilerplate.localhost {
+storage.cvmatch.localhost {
 	reverse_proxy localhost:8069
 }

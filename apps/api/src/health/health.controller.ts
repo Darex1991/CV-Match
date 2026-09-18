@@ -27,7 +27,7 @@ export class HealthController {
 
     return this.health.check([
       () => this.http.pingCheck("google", "https://google.com"),
-      () => this.db.pingCheck("boilerplate"),
+      () => this.db.pingCheck("database"),
     ]);
   }
 }

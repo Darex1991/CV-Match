@@ -173,6 +173,132 @@
         ]
       }
     },
+    "/api/v1/cv-analyses": {
+      "get": {
+        "operationId": "CvAnalysisController_list_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CvAnalysis"
+        ]
+      },
+      "post": {
+        "operationId": "CvAnalysisController_create_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CvAnalysis"
+        ]
+      }
+    },
+    "/api/v1/cv-analyses/{id}": {
+      "get": {
+        "operationId": "CvAnalysisController_getById_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetByIdResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CvAnalysis"
+        ]
+      },
+      "delete": {
+        "operationId": "CvAnalysisController_delete_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CvAnalysis"
+        ]
+      }
+    },
+    "/api/v1/cv-analyses/{id}/retry": {
+      "post": {
+        "operationId": "CvAnalysisController_retry_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetryResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "CvAnalysis"
+        ]
+      }
+    },
     "/api/v1/test-config/setup": {
       "post": {
         "operationId": "TestConfigController_setup_v1",
@@ -371,8 +497,8 @@
     }
   },
   "info": {
-    "title": "Boilerplate API",
-    "description": "Example usage of Swagger with Typebox",
+    "title": "CV Match API",
+    "description": "CV vs. job description analysis with background processing and Claude",
     "version": "1.0",
     "contact": {}
   },
@@ -769,6 +895,1116 @@
         ]
       },
       "DeleteUserResponse": {
+        "type": "null"
+      },
+      "ListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "status": {
+                  "anyOf": [
+                    {
+                      "const": "pending",
+                      "type": "string"
+                    },
+                    {
+                      "const": "extracting",
+                      "type": "string"
+                    },
+                    {
+                      "const": "analyzing",
+                      "type": "string"
+                    },
+                    {
+                      "const": "completed",
+                      "type": "string"
+                    },
+                    {
+                      "const": "failed",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "progress": {
+                  "type": "integer"
+                },
+                "matchScore": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "errorMessage": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "cvFile": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "originalName": {
+                      "type": "string"
+                    },
+                    "mimeType": {
+                      "type": "string"
+                    },
+                    "byteSize": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "originalName",
+                    "mimeType",
+                    "byteSize"
+                  ]
+                },
+                "createdAt": {
+                  "type": "string"
+                },
+                "updatedAt": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "title",
+                "status",
+                "progress",
+                "matchScore",
+                "errorMessage",
+                "cvFile",
+                "createdAt",
+                "updatedAt"
+              ]
+            }
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "GetByIdResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "const": "pending",
+                    "type": "string"
+                  },
+                  {
+                    "const": "extracting",
+                    "type": "string"
+                  },
+                  {
+                    "const": "analyzing",
+                    "type": "string"
+                  },
+                  {
+                    "const": "completed",
+                    "type": "string"
+                  },
+                  {
+                    "const": "failed",
+                    "type": "string"
+                  }
+                ]
+              },
+              "progress": {
+                "type": "integer"
+              },
+              "errorMessage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "cvFile": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "originalName": {
+                    "type": "string"
+                  },
+                  "mimeType": {
+                    "type": "string"
+                  },
+                  "byteSize": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "id",
+                  "originalName",
+                  "mimeType",
+                  "byteSize"
+                ]
+              },
+              "jobDescriptionFile": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "format": "uuid",
+                        "type": "string"
+                      },
+                      "originalName": {
+                        "type": "string"
+                      },
+                      "mimeType": {
+                        "type": "string"
+                      },
+                      "byteSize": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "originalName",
+                      "mimeType",
+                      "byteSize"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "jobDescriptionText": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "result": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "properties": {
+                      "matchScore": {
+                        "description": "Overall fit of the candidate for the role, from 0 (no fit) to 100 (perfect fit).",
+                        "type": "integer"
+                      },
+                      "verdict": {
+                        "description": "strong_match: 80-100, good_match: 60-79, partial_match: 40-59, weak_match: 0-39.",
+                        "anyOf": [
+                          {
+                            "const": "strong_match",
+                            "type": "string"
+                          },
+                          {
+                            "const": "good_match",
+                            "type": "string"
+                          },
+                          {
+                            "const": "partial_match",
+                            "type": "string"
+                          },
+                          {
+                            "const": "weak_match",
+                            "type": "string"
+                          }
+                        ]
+                      },
+                      "summary": {
+                        "description": "Three to five sentences for the recruiter summarising the fit, written in the language of the job description.",
+                        "type": "string"
+                      },
+                      "candidateProfile": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "currentTitle": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "yearsOfExperience": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "location": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "currentTitle",
+                          "yearsOfExperience",
+                          "location"
+                        ]
+                      },
+                      "matchedSkills": {
+                        "description": "Skills, tools or qualifications required by the job that the CV clearly demonstrates.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "missingSkills": {
+                        "description": "Skills, tools or qualifications required by the job that the CV does not show.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "strengths": {
+                        "description": "Concrete strengths of this candidate for this role.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "gaps": {
+                        "description": "Concrete gaps or risks relative to the job requirements.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "redFlags": {
+                        "description": "Inconsistencies, unexplained gaps, or claims worth verifying. Empty when none.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "feedbackForCandidate": {
+                        "description": "Actionable suggestions on how the candidate could improve the CV for this role.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "interviewQuestions": {
+                        "description": "Six to ten tailored interview questions covering every category.",
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "type": "object",
+                          "properties": {
+                            "category": {
+                              "anyOf": [
+                                {
+                                  "const": "technical",
+                                  "type": "string"
+                                },
+                                {
+                                  "const": "behavioral",
+                                  "type": "string"
+                                },
+                                {
+                                  "const": "experience",
+                                  "type": "string"
+                                },
+                                {
+                                  "const": "gap_probe",
+                                  "type": "string"
+                                }
+                              ]
+                            },
+                            "question": {
+                              "type": "string"
+                            },
+                            "rationale": {
+                              "description": "Why this question matters for this candidate and role.",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "category",
+                            "question",
+                            "rationale"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "matchScore",
+                      "verdict",
+                      "summary",
+                      "candidateProfile",
+                      "matchedSkills",
+                      "missingSkills",
+                      "strengths",
+                      "gaps",
+                      "redFlags",
+                      "feedbackForCandidate",
+                      "interviewQuestions"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "createdAt": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "status",
+              "progress",
+              "errorMessage",
+              "cvFile",
+              "jobDescriptionFile",
+              "jobDescriptionText",
+              "result",
+              "createdAt",
+              "updatedAt"
+            ]
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "CreateResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "const": "pending",
+                    "type": "string"
+                  },
+                  {
+                    "const": "extracting",
+                    "type": "string"
+                  },
+                  {
+                    "const": "analyzing",
+                    "type": "string"
+                  },
+                  {
+                    "const": "completed",
+                    "type": "string"
+                  },
+                  {
+                    "const": "failed",
+                    "type": "string"
+                  }
+                ]
+              },
+              "progress": {
+                "type": "integer"
+              },
+              "errorMessage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "cvFile": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "originalName": {
+                    "type": "string"
+                  },
+                  "mimeType": {
+                    "type": "string"
+                  },
+                  "byteSize": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "id",
+                  "originalName",
+                  "mimeType",
+                  "byteSize"
+                ]
+              },
+              "jobDescriptionFile": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "format": "uuid",
+                        "type": "string"
+                      },
+                      "originalName": {
+                        "type": "string"
+                      },
+                      "mimeType": {
+                        "type": "string"
+                      },
+                      "byteSize": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "originalName",
+                      "mimeType",
+                      "byteSize"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "jobDescriptionText": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "result": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "properties": {
+                      "matchScore": {
+                        "description": "Overall fit of the candidate for the role, from 0 (no fit) to 100 (perfect fit).",
+                        "type": "integer"
+                      },
+                      "verdict": {
+                        "description": "strong_match: 80-100, good_match: 60-79, partial_match: 40-59, weak_match: 0-39.",
+                        "anyOf": [
+                          {
+                            "const": "strong_match",
+                            "type": "string"
+                          },
+                          {
+                            "const": "good_match",
+                            "type": "string"
+                          },
+                          {
+                            "const": "partial_match",
+                            "type": "string"
+                          },
+                          {
+                            "const": "weak_match",
+                            "type": "string"
+                          }
+                        ]
+                      },
+                      "summary": {
+                        "description": "Three to five sentences for the recruiter summarising the fit, written in the language of the job description.",
+                        "type": "string"
+                      },
+                      "candidateProfile": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "currentTitle": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "yearsOfExperience": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "location": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "currentTitle",
+                          "yearsOfExperience",
+                          "location"
+                        ]
+                      },
+                      "matchedSkills": {
+                        "description": "Skills, tools or qualifications required by the job that the CV clearly demonstrates.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "missingSkills": {
+                        "description": "Skills, tools or qualifications required by the job that the CV does not show.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "strengths": {
+                        "description": "Concrete strengths of this candidate for this role.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "gaps": {
+                        "description": "Concrete gaps or risks relative to the job requirements.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "redFlags": {
+                        "description": "Inconsistencies, unexplained gaps, or claims worth verifying. Empty when none.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "feedbackForCandidate": {
+                        "description": "Actionable suggestions on how the candidate could improve the CV for this role.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "interviewQuestions": {
+                        "description": "Six to ten tailored interview questions covering every category.",
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "type": "object",
+                          "properties": {
+                            "category": {
+                              "anyOf": [
+                                {
+                                  "const": "technical",
+                                  "type": "string"
+                                },
+                                {
+                                  "const": "behavioral",
+                                  "type": "string"
+                                },
+                                {
+                                  "const": "experience",
+                                  "type": "string"
+                                },
+                                {
+                                  "const": "gap_probe",
+                                  "type": "string"
+                                }
+                              ]
+                            },
+                            "question": {
+                              "type": "string"
+                            },
+                            "rationale": {
+                              "description": "Why this question matters for this candidate and role.",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "category",
+                            "question",
+                            "rationale"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "matchScore",
+                      "verdict",
+                      "summary",
+                      "candidateProfile",
+                      "matchedSkills",
+                      "missingSkills",
+                      "strengths",
+                      "gaps",
+                      "redFlags",
+                      "feedbackForCandidate",
+                      "interviewQuestions"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "createdAt": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "status",
+              "progress",
+              "errorMessage",
+              "cvFile",
+              "jobDescriptionFile",
+              "jobDescriptionText",
+              "result",
+              "createdAt",
+              "updatedAt"
+            ]
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "RetryResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "const": "pending",
+                    "type": "string"
+                  },
+                  {
+                    "const": "extracting",
+                    "type": "string"
+                  },
+                  {
+                    "const": "analyzing",
+                    "type": "string"
+                  },
+                  {
+                    "const": "completed",
+                    "type": "string"
+                  },
+                  {
+                    "const": "failed",
+                    "type": "string"
+                  }
+                ]
+              },
+              "progress": {
+                "type": "integer"
+              },
+              "errorMessage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "cvFile": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "originalName": {
+                    "type": "string"
+                  },
+                  "mimeType": {
+                    "type": "string"
+                  },
+                  "byteSize": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "id",
+                  "originalName",
+                  "mimeType",
+                  "byteSize"
+                ]
+              },
+              "jobDescriptionFile": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "format": "uuid",
+                        "type": "string"
+                      },
+                      "originalName": {
+                        "type": "string"
+                      },
+                      "mimeType": {
+                        "type": "string"
+                      },
+                      "byteSize": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "originalName",
+                      "mimeType",
+                      "byteSize"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "jobDescriptionText": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "result": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "properties": {
+                      "matchScore": {
+                        "description": "Overall fit of the candidate for the role, from 0 (no fit) to 100 (perfect fit).",
+                        "type": "integer"
+                      },
+                      "verdict": {
+                        "description": "strong_match: 80-100, good_match: 60-79, partial_match: 40-59, weak_match: 0-39.",
+                        "anyOf": [
+                          {
+                            "const": "strong_match",
+                            "type": "string"
+                          },
+                          {
+                            "const": "good_match",
+                            "type": "string"
+                          },
+                          {
+                            "const": "partial_match",
+                            "type": "string"
+                          },
+                          {
+                            "const": "weak_match",
+                            "type": "string"
+                          }
+                        ]
+                      },
+                      "summary": {
+                        "description": "Three to five sentences for the recruiter summarising the fit, written in the language of the job description.",
+                        "type": "string"
+                      },
+                      "candidateProfile": {
+                        "additionalProperties": false,
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "currentTitle": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "yearsOfExperience": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "location": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "currentTitle",
+                          "yearsOfExperience",
+                          "location"
+                        ]
+                      },
+                      "matchedSkills": {
+                        "description": "Skills, tools or qualifications required by the job that the CV clearly demonstrates.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "missingSkills": {
+                        "description": "Skills, tools or qualifications required by the job that the CV does not show.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "strengths": {
+                        "description": "Concrete strengths of this candidate for this role.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "gaps": {
+                        "description": "Concrete gaps or risks relative to the job requirements.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "redFlags": {
+                        "description": "Inconsistencies, unexplained gaps, or claims worth verifying. Empty when none.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "feedbackForCandidate": {
+                        "description": "Actionable suggestions on how the candidate could improve the CV for this role.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "interviewQuestions": {
+                        "description": "Six to ten tailored interview questions covering every category.",
+                        "type": "array",
+                        "items": {
+                          "additionalProperties": false,
+                          "type": "object",
+                          "properties": {
+                            "category": {
+                              "anyOf": [
+                                {
+                                  "const": "technical",
+                                  "type": "string"
+                                },
+                                {
+                                  "const": "behavioral",
+                                  "type": "string"
+                                },
+                                {
+                                  "const": "experience",
+                                  "type": "string"
+                                },
+                                {
+                                  "const": "gap_probe",
+                                  "type": "string"
+                                }
+                              ]
+                            },
+                            "question": {
+                              "type": "string"
+                            },
+                            "rationale": {
+                              "description": "Why this question matters for this candidate and role.",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "category",
+                            "question",
+                            "rationale"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "matchScore",
+                      "verdict",
+                      "summary",
+                      "candidateProfile",
+                      "matchedSkills",
+                      "missingSkills",
+                      "strengths",
+                      "gaps",
+                      "redFlags",
+                      "feedbackForCandidate",
+                      "interviewQuestions"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "createdAt": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "status",
+              "progress",
+              "errorMessage",
+              "cvFile",
+              "jobDescriptionFile",
+              "jobDescriptionText",
+              "result",
+              "createdAt",
+              "updatedAt"
+            ]
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "DeleteResponse": {
         "type": "null"
       }
     }

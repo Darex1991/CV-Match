@@ -43,7 +43,17 @@ export class FileStorageService {
     await this.markDeletedByKey(key);
   }
 
-  generateEntityRef(entityType: "user", entityId: string) {
+  async downloadFile(key: string): Promise<Buffer> {
+    return this.adapter.downloadFile(key);
+  }
+
+  async getFileById(id: string): Promise<StoredFile | undefined> {
+    const [found] = await this.db.select().from(file).where(eq(file.id, id));
+
+    return found;
+  }
+
+  generateEntityRef(entityType: "user" | "cv-analysis", entityId: string) {
     return `${entityType}:${entityId}`;
   }
 

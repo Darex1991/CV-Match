@@ -5,7 +5,7 @@ import pl from "~/locales/pl.json";
 
 export const SUPPORTED_LANGUAGES = ["en", "pl"] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
-const LANGUAGE_STORAGE_KEY = "boilerplate-language";
+const LANGUAGE_STORAGE_KEY = "cv-match-language";
 
 export const isSupportedLanguage = (value: string): value is SupportedLanguage =>
   SUPPORTED_LANGUAGES.includes(value as SupportedLanguage);

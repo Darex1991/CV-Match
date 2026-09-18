@@ -4,4 +4,6 @@ export abstract class FileStorageAdapter {
   abstract uploadFile(input: UploadFileInput): Promise<UploadFileResult>;
 
   abstract deleteFile(key: string): Promise<void>;
+
+  abstract downloadFile(key: string): Promise<Buffer>;
 }

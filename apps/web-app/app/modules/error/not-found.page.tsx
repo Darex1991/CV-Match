@@ -17,7 +17,7 @@ export default function NotFoundPage() {
     <div className="flex min-h-screen items-center justify-center bg-muted/20 p-6">
       <Card className="w-full max-w-lg border-border">
         <CardHeader className="space-y-3 text-center">
-          <img src="/brand.svg" alt="Boilerplate logo" className="mx-auto size-10" />
+          <img src="/brand.svg" alt="CV Match logo" className="mx-auto size-10" />
           <p className="text-sm font-medium text-muted-foreground">
             {t("errors.global.code")}
           </p>

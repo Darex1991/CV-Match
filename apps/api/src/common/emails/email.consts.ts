@@ -1,4 +1,4 @@
-export const EMAIL_FROM = "test@boilerplate.selleo.dev";
+export const EMAIL_FROM = "no-reply@cvmatch.localhost";
 
 export const RESET_PASSWORD_EMAIL = {
   subject: "Reset your password",

@@ -8,7 +8,7 @@ FROM base AS prune
 
 COPY . .
 
-RUN pnpm dlx turbo@2.6.3 prune --scope=boilerplate-api --scope=@repo/email-templates --scope=@repo/shared --docker
+RUN pnpm dlx turbo@2.6.3 prune --scope=cv-match-api --scope=@repo/email-templates --scope=@repo/shared --docker
 
 FROM base AS deps
 
@@ -25,7 +25,7 @@ COPY --from=prune /app/out/full/ ./
 
 RUN pnpm build-email --filter=@repo/email-templates \
  && pnpm build-shared --filter=@repo/shared \
- && pnpm build --filter=boilerplate-api
+ && pnpm build --filter=cv-match-api
 
 ############################
 

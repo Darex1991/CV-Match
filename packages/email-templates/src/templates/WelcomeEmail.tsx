@@ -27,7 +27,7 @@ export const WelcomeEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Welcome to Boilerplate. Verify your email to get started.</Preview>
+      <Preview>Welcome to CV Match. Verify your email to get started.</Preview>
       <Tailwind>
         <Body className="m-0 bg-slate-100 px-4 py-10 font-sans">
           <Container className="mx-auto max-w-xl rounded-2xl bg-white p-10">
@@ -42,7 +42,7 @@ export const WelcomeEmail = ({
             </Heading>
 
             <Text className="mb-0 mt-5 text-base leading-7 text-slate-700">
-              Thanks for joining Boilerplate with <strong>{email}</strong>. Please
+              Thanks for joining CV Match with <strong>{email}</strong>. Please
               confirm your email address to activate your account.
             </Text>
 

@@ -81,6 +81,212 @@ export interface UpdateUserResponse {
 
 export type DeleteUserResponse = null;
 
+export interface ListResponse {
+  data: {
+    /** @format uuid */
+    id: string;
+    title: string;
+    status: "pending" | "extracting" | "analyzing" | "completed" | "failed";
+    progress: number;
+    matchScore: number | null;
+    errorMessage: string | null;
+    cvFile: {
+      /** @format uuid */
+      id: string;
+      originalName: string;
+      mimeType: string;
+      byteSize: number;
+    };
+    createdAt: string;
+    updatedAt: string;
+  }[];
+}
+
+export interface GetByIdResponse {
+  data: {
+    /** @format uuid */
+    id: string;
+    title: string;
+    status: "pending" | "extracting" | "analyzing" | "completed" | "failed";
+    progress: number;
+    errorMessage: string | null;
+    cvFile: {
+      /** @format uuid */
+      id: string;
+      originalName: string;
+      mimeType: string;
+      byteSize: number;
+    };
+    jobDescriptionFile: {
+      /** @format uuid */
+      id: string;
+      originalName: string;
+      mimeType: string;
+      byteSize: number;
+    } | null;
+    jobDescriptionText: string | null;
+    result: {
+      /** Overall fit of the candidate for the role, from 0 (no fit) to 100 (perfect fit). */
+      matchScore: number;
+      /** strong_match: 80-100, good_match: 60-79, partial_match: 40-59, weak_match: 0-39. */
+      verdict: "strong_match" | "good_match" | "partial_match" | "weak_match";
+      /** Three to five sentences for the recruiter summarising the fit, written in the language of the job description. */
+      summary: string;
+      candidateProfile: {
+        name: string | null;
+        currentTitle: string | null;
+        yearsOfExperience: number | null;
+        location: string | null;
+      };
+      /** Skills, tools or qualifications required by the job that the CV clearly demonstrates. */
+      matchedSkills: string[];
+      /** Skills, tools or qualifications required by the job that the CV does not show. */
+      missingSkills: string[];
+      /** Concrete strengths of this candidate for this role. */
+      strengths: string[];
+      /** Concrete gaps or risks relative to the job requirements. */
+      gaps: string[];
+      /** Inconsistencies, unexplained gaps, or claims worth verifying. Empty when none. */
+      redFlags: string[];
+      /** Actionable suggestions on how the candidate could improve the CV for this role. */
+      feedbackForCandidate: string[];
+      /** Six to ten tailored interview questions covering every category. */
+      interviewQuestions: {
+        category: "technical" | "behavioral" | "experience" | "gap_probe";
+        question: string;
+        /** Why this question matters for this candidate and role. */
+        rationale: string;
+      }[];
+    } | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+export interface CreateResponse {
+  data: {
+    /** @format uuid */
+    id: string;
+    title: string;
+    status: "pending" | "extracting" | "analyzing" | "completed" | "failed";
+    progress: number;
+    errorMessage: string | null;
+    cvFile: {
+      /** @format uuid */
+      id: string;
+      originalName: string;
+      mimeType: string;
+      byteSize: number;
+    };
+    jobDescriptionFile: {
+      /** @format uuid */
+      id: string;
+      originalName: string;
+      mimeType: string;
+      byteSize: number;
+    } | null;
+    jobDescriptionText: string | null;
+    result: {
+      /** Overall fit of the candidate for the role, from 0 (no fit) to 100 (perfect fit). */
+      matchScore: number;
+      /** strong_match: 80-100, good_match: 60-79, partial_match: 40-59, weak_match: 0-39. */
+      verdict: "strong_match" | "good_match" | "partial_match" | "weak_match";
+      /** Three to five sentences for the recruiter summarising the fit, written in the language of the job description. */
+      summary: string;
+      candidateProfile: {
+        name: string | null;
+        currentTitle: string | null;
+        yearsOfExperience: number | null;
+        location: string | null;
+      };
+      /** Skills, tools or qualifications required by the job that the CV clearly demonstrates. */
+      matchedSkills: string[];
+      /** Skills, tools or qualifications required by the job that the CV does not show. */
+      missingSkills: string[];
+      /** Concrete strengths of this candidate for this role. */
+      strengths: string[];
+      /** Concrete gaps or risks relative to the job requirements. */
+      gaps: string[];
+      /** Inconsistencies, unexplained gaps, or claims worth verifying. Empty when none. */
+      redFlags: string[];
+      /** Actionable suggestions on how the candidate could improve the CV for this role. */
+      feedbackForCandidate: string[];
+      /** Six to ten tailored interview questions covering every category. */
+      interviewQuestions: {
+        category: "technical" | "behavioral" | "experience" | "gap_probe";
+        question: string;
+        /** Why this question matters for this candidate and role. */
+        rationale: string;
+      }[];
+    } | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+export interface RetryResponse {
+  data: {
+    /** @format uuid */
+    id: string;
+    title: string;
+    status: "pending" | "extracting" | "analyzing" | "completed" | "failed";
+    progress: number;
+    errorMessage: string | null;
+    cvFile: {
+      /** @format uuid */
+      id: string;
+      originalName: string;
+      mimeType: string;
+      byteSize: number;
+    };
+    jobDescriptionFile: {
+      /** @format uuid */
+      id: string;
+      originalName: string;
+      mimeType: string;
+      byteSize: number;
+    } | null;
+    jobDescriptionText: string | null;
+    result: {
+      /** Overall fit of the candidate for the role, from 0 (no fit) to 100 (perfect fit). */
+      matchScore: number;
+      /** strong_match: 80-100, good_match: 60-79, partial_match: 40-59, weak_match: 0-39. */
+      verdict: "strong_match" | "good_match" | "partial_match" | "weak_match";
+      /** Three to five sentences for the recruiter summarising the fit, written in the language of the job description. */
+      summary: string;
+      candidateProfile: {
+        name: string | null;
+        currentTitle: string | null;
+        yearsOfExperience: number | null;
+        location: string | null;
+      };
+      /** Skills, tools or qualifications required by the job that the CV clearly demonstrates. */
+      matchedSkills: string[];
+      /** Skills, tools or qualifications required by the job that the CV does not show. */
+      missingSkills: string[];
+      /** Concrete strengths of this candidate for this role. */
+      strengths: string[];
+      /** Concrete gaps or risks relative to the job requirements. */
+      gaps: string[];
+      /** Inconsistencies, unexplained gaps, or claims worth verifying. Empty when none. */
+      redFlags: string[];
+      /** Actionable suggestions on how the candidate could improve the CV for this role. */
+      feedbackForCandidate: string[];
+      /** Six to ten tailored interview questions covering every category. */
+      interviewQuestions: {
+        category: "technical" | "behavioral" | "experience" | "gap_probe";
+        question: string;
+        /** Why this question matters for this candidate and role. */
+        rationale: string;
+      }[];
+    } | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+export type DeleteResponse = null;
+
 import type {
   AxiosInstance,
   AxiosRequestConfig,
@@ -257,11 +463,11 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title Boilerplate API
+ * @title CV Match API
  * @version 1.0
  * @contact
  *
- * Example usage of Swagger with Typebox
+ * CV vs. job description analysis with background processing and Claude
  */
 export class API<
   SecurityDataType extends unknown,
@@ -374,6 +580,81 @@ export class API<
     ) =>
       this.request<UploadUserImageResponse, any>({
         path: `/api/v1/users/${id}/image`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags CvAnalysis
+     * @name CvAnalysisControllerListV1
+     * @request GET:/api/v1/cv-analyses
+     */
+    cvAnalysisControllerListV1: (params: RequestParams = {}) =>
+      this.request<ListResponse, any>({
+        path: `/api/v1/cv-analyses`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags CvAnalysis
+     * @name CvAnalysisControllerCreateV1
+     * @request POST:/api/v1/cv-analyses
+     */
+    cvAnalysisControllerCreateV1: (params: RequestParams = {}) =>
+      this.request<CreateResponse, any>({
+        path: `/api/v1/cv-analyses`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags CvAnalysis
+     * @name CvAnalysisControllerGetByIdV1
+     * @request GET:/api/v1/cv-analyses/{id}
+     */
+    cvAnalysisControllerGetByIdV1: (id: string, params: RequestParams = {}) =>
+      this.request<GetByIdResponse, any>({
+        path: `/api/v1/cv-analyses/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags CvAnalysis
+     * @name CvAnalysisControllerDeleteV1
+     * @request DELETE:/api/v1/cv-analyses/{id}
+     */
+    cvAnalysisControllerDeleteV1: (id: string, params: RequestParams = {}) =>
+      this.request<DeleteResponse, any>({
+        path: `/api/v1/cv-analyses/${id}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags CvAnalysis
+     * @name CvAnalysisControllerRetryV1
+     * @request POST:/api/v1/cv-analyses/{id}/retry
+     */
+    cvAnalysisControllerRetryV1: (id: string, params: RequestParams = {}) =>
+      this.request<RetryResponse, any>({
+        path: `/api/v1/cv-analyses/${id}/retry`,
         method: "POST",
         format: "json",
         ...params,

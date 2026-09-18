@@ -1,5 +1,5 @@
 {
-  "name": "boilerplate",
+  "name": "cv-match",
   "version": "1.7.0",
   "private": true,
   "scripts": {
@@ -10,14 +10,14 @@
     "dev-social": "turbo dev-social",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "generate:client": "pnpm run --filter=boilerplate-web-app generate:client",
-    "db:generate": "pnpm run --filter=boilerplate-api db:generate",
-    "db:migrate": "pnpm run --filter=boilerplate-api db:migrate",
-    "test:web": "pnpm run --filter=boilerplate-web-app test",
-    "test:api": "pnpm run --filter=boilerplate-api test",
-    "test:web:e2e": "pnpm run --filter=boilerplate-web-app test:e2e",
-    "test:api:e2e": "pnpm run --filter=boilerplate-api test:e2e",
-    "typecheck:api": "pnpm run --filter=boilerplate-api typecheck",
+    "generate:client": "pnpm run --filter=cv-match-web generate:client",
+    "db:generate": "pnpm run --filter=cv-match-api db:generate",
+    "db:migrate": "pnpm run --filter=cv-match-api db:migrate",
+    "test:web": "pnpm run --filter=cv-match-web test",
+    "test:api": "pnpm run --filter=cv-match-api test",
+    "test:web:e2e": "pnpm run --filter=cv-match-web test:e2e",
+    "test:api:e2e": "pnpm run --filter=cv-match-api test:e2e",
+    "typecheck:api": "pnpm run --filter=cv-match-api typecheck",
     "clean-modules": "rm -rf node_modules && cd packages/email-templates && rm -rf node_modules"
   },
   "devDependencies": {

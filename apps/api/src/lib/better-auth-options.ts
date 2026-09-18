@@ -63,11 +63,11 @@ export const buildBetterAuthInstance = ({
 
   const trustedOrigins = isProd
     ? [env("CORS_ORIGIN")!]
-    : ["http://localhost:5173", "https://app.boilerplate.localhost"];
+    : ["http://localhost:5173", "https://app.cvmatch.localhost"];
 
   const crossSubDomainCookiesDomain = isProd
     ? env("COOKIE_DOMAIN")
-    : "boilerplate.localhost";
+    : "cvmatch.localhost";
 
   const defaultPlugins: BetterAuthPlugin[] = plugins ?? [openAPI(), admin()];
 

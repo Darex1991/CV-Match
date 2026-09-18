@@ -3,10 +3,10 @@ services:
     image: postgres:16-alpine
     restart: always
     environment:
-      POSTGRES_PASSWORD: boilerplate 
-      POSTGRES_DB: boilerplate 
+      POSTGRES_PASSWORD: cvmatch 
+      POSTGRES_DB: cv_match 
     volumes:
-      - boilerplate-db-data:/var/lib/postgresql/data
+      - cv-match-db-data:/var/lib/postgresql/data
       - ./database-init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - 5432:5432
@@ -22,7 +22,7 @@ services:
     ports:
       - 6379:6379
     volumes:
-      - boilerplate-redis-data:/data
+      - cv-match-redis-data:/data
 
   rustfs:
     image: rustfs/rustfs:latest
@@ -70,7 +70,7 @@ services:
       rustfs:
         condition: service_healthy
     environment:
-      - AWS_BUCKET_NAME=${AWS_BUCKET_NAME:-boilerplate-prod}
+      - AWS_BUCKET_NAME=${AWS_BUCKET_NAME:-cv-match-prod}
       - RUSTFS_ACCESS_KEY=rustfsadmin
       - RUSTFS_SECRET_KEY=rustfsadmin
     entrypoint: >
@@ -95,9 +95,9 @@ services:
     restart: "no"
 
 volumes:
-  boilerplate-db-data:
+  cv-match-db-data:
     driver: local
-  boilerplate-redis-data:
+  cv-match-redis-data:
     driver: local
   rustfs_data_0:
     driver: local

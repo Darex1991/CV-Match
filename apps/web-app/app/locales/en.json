@@ -5,7 +5,7 @@
       "register": "Create your account"
     },
     "subheadings": {
-      "login": "Login to your Boilerplate account",
+      "login": "Login to your CV Match account",
       "register": "Enter your details to get started"
     },
     "fields": {
@@ -120,8 +120,8 @@
   },
   "landing": {
     "meta": {
-      "title": "Boilerplate | React + NestJS starter",
-      "description": "Launch your next SaaS faster with a production-ready React + NestJS starter from Selleo."
+      "title": "CV Match | AI-powered CV screening",
+      "description": "Upload a CV and a job description. CV Match parses both in the background and returns a match score, gaps and tailored interview questions."
     },
     "layout": {
       "nav": {
@@ -143,40 +143,40 @@
       }
     },
     "hero": {
-      "badge": "Launch faster with confidence",
-      "title": "A Battle-tested fullstack template, crafted by Selleo",
-      "description": "Boilerplate gives your team a modern front-end, a secure backend, and opinionated patterns so you can focus on building your product, not wiring boilerplate.",
+      "badge": "AI assistant for recruiters",
+      "title": "Screen CVs against the role in minutes, not hours",
+      "description": "Upload a candidate's CV and paste the job description. CV Match extracts the content, lets Claude compare them and hands you a match score, strengths, gaps and interview questions.",
       "primaryCta": "Create your account",
-      "secondaryCta": "Explore the demo",
+      "secondaryCta": "See how it works",
       "highlights": {
-        "auth": "Auth, dashboard & CLI-ready",
-        "stack": "Typesafe React + NestJS stack"
+        "auth": "Background processing with live progress",
+        "stack": "PDF, DOCX and plain-text CVs"
       }
     },
     "features": {
-      "title": "Everything teams need to start shipping",
-      "description": "Build on a stack that scales. We ship production decisions, so your team can focus on customer value from day one.",
+      "title": "Everything a first screening needs",
+      "description": "From upload to interview prep in a single flow.",
       "items": {
         "authSecurity": {
-          "title": "Auth & security done",
-          "description": "Email login, passwordless, Google OAuth, roles and permissions already wired up."
+          "title": "Upload & parse",
+          "description": "Drop a PDF, DOCX or text CV plus the job posting. Files land in object storage and are parsed in a background worker."
         },
         "dashboardFoundation": {
-          "title": "Dashboard foundation",
-          "description": "Responsive layout, data fetching patterns, and UI primitives to build from day one."
+          "title": "AI match report",
+          "description": "Claude returns a structured report: match score, requirements coverage, strengths, gaps and red flags."
         },
         "developerErgonomics": {
-          "title": "Developer ergonomics",
-          "description": "Clean architecture, typed APIs, testing setup and DX improvements baked in."
+          "title": "Interview ready",
+          "description": "Tailored technical, behavioral and gap-probing questions, plus CV feedback you can forward to the candidate."
         }
       }
     },
     "pricing": {
-      "title": "Simple pricing to get started",
-      "description": "The starter template is open source. Self-host for free or work with Selleo for implementation support, custom features, and product strategy.",
+      "title": "Open source starter",
+      "description": "CV Match is a demo built on the Selleo boilerplate. Self-host it, plug in your Anthropic API key and adapt it to your hiring process.",
       "amount": "$0",
-      "amountNote": "for the template",
-      "additional": "Need a dedicated team? Reach out to tailor the stack for your next product.",
+      "amountNote": "self-hosted",
+      "additional": "Only pay for the Claude API calls your analyses make.",
       "contactCta": "Talk to Selleo",
       "codebaseCta": "Browse the codebase"
     },
@@ -220,5 +220,178 @@
   "about": {
     "metaTitle": "About page",
     "heading": "About page"
+  },
+  "cvAnalysis": {
+    "nav": {
+      "group": "Recruiting",
+      "dashboard": "Overview",
+      "analyses": "CV analyses",
+      "new": "New analysis"
+    },
+    "status": {
+      "pending": "Queued",
+      "extracting": "Extracting text",
+      "analyzing": "AI analysis",
+      "completed": "Completed",
+      "failed": "Failed"
+    },
+    "verdict": {
+      "strong_match": "Strong match",
+      "good_match": "Good match",
+      "partial_match": "Partial match",
+      "weak_match": "Weak match"
+    },
+    "actions": {
+      "new": "New analysis",
+      "retry": "Retry",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "backToList": "Back to analyses",
+      "deleteConfirm": {
+        "title": "Delete this analysis?",
+        "description": "\"{{title}}\" and its uploaded files will be removed permanently."
+      }
+    },
+    "upload": {
+      "hint": "PDF, DOCX, TXT or Markdown, up to 10 MB",
+      "remove": "Remove file",
+      "errors": {
+        "type": "Only PDF, DOCX, TXT and Markdown files are supported.",
+        "size": "The file is larger than 10 MB."
+      }
+    },
+    "form": {
+      "heading": "New CV analysis",
+      "subheading": "Upload a candidate's CV and describe the role. The analysis runs in the background and you will be redirected to its progress.",
+      "cv": {
+        "title": "Candidate CV",
+        "description": "The document will be parsed and compared against the job description.",
+        "dropzone": "Drop the CV here or click to browse"
+      },
+      "title": {
+        "label": "Analysis name (optional)",
+        "placeholder": "e.g. Jane Doe - Senior Frontend",
+        "hint": "Defaults to the CV file name."
+      },
+      "job": {
+        "title": "Job description",
+        "description": "Paste the posting or upload it as a file.",
+        "tabs": {
+          "text": "Paste text",
+          "file": "Upload file"
+        },
+        "placeholder": "Paste the job description, requirements and nice-to-haves here...",
+        "dropzone": "Drop the job description here or click to browse",
+        "chars": "{{count}} characters",
+        "minChars": "Enter at least {{min}} characters."
+      },
+      "footnote": "Processing usually takes under a minute. You can leave the page and come back later.",
+      "submit": "Start analysis",
+      "submitting": "Uploading...",
+      "toast": {
+        "created": "Analysis queued. Processing has started."
+      }
+    },
+    "list": {
+      "title": "CV analyses",
+      "description": "Every analysis you have run, newest first. In-progress items refresh automatically.",
+      "error": "We couldn't load your analyses.",
+      "empty": {
+        "title": "No analyses yet",
+        "description": "Upload a CV and a job description to get a match score, gaps and tailored interview questions."
+      }
+    },
+    "overview": {
+      "total": "All analyses",
+      "processing": "In progress",
+      "completed": "Completed",
+      "failed": "Failed",
+      "recent": {
+        "title": "Recent analyses",
+        "description": "The latest five analyses.",
+        "all": "View all",
+        "empty": "Nothing here yet. Start with your first analysis."
+      }
+    },
+    "timeline": {
+      "progress": "Processing progress",
+      "steps": {
+        "pending": {
+          "title": "Queued",
+          "description": "Waiting for a worker"
+        },
+        "extracting": {
+          "title": "Extracting text",
+          "description": "Reading the CV and job description"
+        },
+        "analyzing": {
+          "title": "AI analysis",
+          "description": "Claude compares the candidate with the role"
+        },
+        "completed": {
+          "title": "Done",
+          "description": "Results are ready"
+        }
+      }
+    },
+    "detail": {
+      "loading": "Loading...",
+      "files": {
+        "cv": "CV",
+        "job": "Job description"
+      },
+      "processing": {
+        "title": "Processing",
+        "description": "This page refreshes automatically while the analysis runs."
+      },
+      "failed": {
+        "title": "Analysis failed",
+        "description": "Something went wrong while processing this analysis."
+      },
+      "notFound": {
+        "title": "Analysis not available",
+        "description": "It may have been deleted or belongs to another account."
+      },
+      "jobDescription": "Job description used"
+    },
+    "result": {
+      "summary": "Recruiter summary",
+      "matchScore": "Match score",
+      "scoreLabel": "Match score {{score}} out of 100",
+      "none": "Nothing to report.",
+      "noRedFlags": "No red flags spotted.",
+      "profile": {
+        "heading": "Candidate",
+        "name": "Name",
+        "title": "Current title",
+        "experience": "Experience",
+        "years": "{{count}} years",
+        "location": "Location",
+        "empty": "The CV did not reveal basic profile details."
+      },
+      "skills": {
+        "heading": "Requirements coverage",
+        "description": "How the CV covers what the job asks for.",
+        "matched": "Matched ({{count}})",
+        "missing": "Missing ({{count}})"
+      },
+      "strengths": "Strengths",
+      "gaps": "Gaps",
+      "redFlags": "Red flags",
+      "feedback": {
+        "heading": "Feedback for the candidate",
+        "description": "Suggestions on how the CV could better fit this role."
+      },
+      "questions": {
+        "heading": "Interview questions ({{count}})",
+        "description": "Tailored to this candidate and role, grouped by category.",
+        "categories": {
+          "technical": "Technical",
+          "experience": "Experience",
+          "behavioral": "Behavioral",
+          "gap_probe": "Probing gaps"
+        }
+      }
+    }
   }
 }

@@ -22,6 +22,13 @@
       "when": 1758287259869,
       "tag": "0002_add_admin_plugin",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789719041379,
+      "tag": "0003_cv_analysis_init",
+      "breakpoints": true
     }
   ]
 }

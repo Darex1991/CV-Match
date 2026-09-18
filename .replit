@@ -24,7 +24,7 @@ modules = ["web", "bash", "nodejs-24"]
 
   [[workflows.workflow.tasks]]
   task = "shell.exec"
-  args = "pnpm --filter boilerplate-web-app dev"
+  args = "pnpm --filter cv-match-web dev"
   waitForPort = 5173
 
   [workflows.workflow.metadata]
@@ -36,6 +36,6 @@ externalPort = 80
 
   [deployment]
   deploymentTarget = "static"
-  build = ["pnpm", "--filter", "boilerplate-web-app", "build"]
+  build = ["pnpm", "--filter", "cv-match-web", "build"]
   publicDir = "apps/web-app/build/client"
   

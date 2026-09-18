@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: true
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/boilerplate
-      DATABASE_TEST_URL: postgres://postgres:postgres@localhost:5432/boilerplate_test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/cv_match
+      DATABASE_TEST_URL: postgres://postgres:postgres@localhost:5432/cv_match_test
       REDIS_URL: redis://localhost:6379
       AWS_REGION: eu-central-1
       AWS_ACCESS_KEY_ID: test
@@ -73,8 +73,8 @@ jobs:
 
       - name: Prepare databases
         run: |
-          psql -h localhost -U postgres -c "CREATE DATABASE boilerplate;"
-          psql -h localhost -U postgres -c "CREATE DATABASE boilerplate_test;"
+          psql -h localhost -U postgres -c "CREATE DATABASE cv_match;"
+          psql -h localhost -U postgres -c "CREATE DATABASE cv_match_test;"
         env:
           PGPASSWORD: postgres
 
@@ -85,7 +85,7 @@ jobs:
         run: pnpm run typecheck:api
 
       - name: Build
-        run: pnpm run --filter=boilerplate-api build
+        run: pnpm run --filter=cv-match-api build
 
       - name: Run API tests
         run: pnpm test:api

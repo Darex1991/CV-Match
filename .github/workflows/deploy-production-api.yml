@@ -39,7 +39,7 @@ jobs:
         id: build-image
         env:
           IMAGE_TAG: ${{ github.sha }}
-          ECR_URL: ${{ steps.login-ecr.outputs.registry }}/boilerplate/production/api
+          ECR_URL: ${{ steps.login-ecr.outputs.registry }}/cv-match/production/api
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN_API }}
         run: |
           docker build -f ./apps/api/Dockerfile \
@@ -74,8 +74,8 @@ jobs:
             BETTER_AUTH_URL
 
           paths: |
-            /boilerplate/production/api/terraform/
-            /boilerplate/production/api/editable/
+            /cv-match/production/api/terraform/
+            /cv-match/production/api/editable/
 
       - name: Render secrets for MIGRATE
         id: render-secrets-migrate
@@ -102,8 +102,8 @@ jobs:
             BETTER_AUTH_URL
 
           paths: |
-            /boilerplate/production/api/terraform/
-            /boilerplate/production/api/editable/
+            /cv-match/production/api/terraform/
+            /cv-match/production/api/editable/
 
       - name: Prepare final API task
         id: task-def-api

@@ -12,6 +12,9 @@ export default [
   ]),
   layout("modules/dashboard/dashboard.layout.tsx", [
     route("dashboard", "modules/dashboard/dashboard.page.tsx", { index: true }),
+    route("dashboard/cv-analyses", "modules/CvAnalysis/CvAnalyses.page.tsx"),
+    route("dashboard/cv-analyses/new", "modules/CvAnalysis/NewCvAnalysis.page.tsx"),
+    route("dashboard/cv-analyses/:id", "modules/CvAnalysis/CvAnalysisDetail.page.tsx"),
     route("dashboard/admin/users", "modules/dashboard/admin/users.page.tsx"),
     route("dashboard/*", "modules/dashboard/dashboard-not-found.page.tsx")
   ]),

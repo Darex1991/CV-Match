@@ -36,7 +36,7 @@ async function bootstrap() {
     origin: [
       "http://localhost:5173",
       "http://localhost:5174",
-      "https://app.boilerplate.localhost",
+      "https://app.cvmatch.localhost",
       "http://localhost:3000",
     ],
     credentials: true,
@@ -49,14 +49,14 @@ async function bootstrap() {
   })
 
   const config = new DocumentBuilder()
-    .setTitle("Boilerplate API")
-    .setDescription("Example usage of Swagger with Typebox")
+    .setTitle("CV Match API")
+    .setDescription("CV vs. job description analysis with background processing and Claude")
     .setVersion("1.0")
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);
   exportSchemaToFile(document);
 
-  await app.listen(3000);
+  await app.listen(Number(process.env.PORT) || 3000);
 }
 bootstrap();

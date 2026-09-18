@@ -80,7 +80,7 @@ export default function LandingPage() {
             <div className="relative flex size-40 items-center justify-center rounded-3xl border border-primary/30 bg-background/80 shadow-2xl backdrop-blur md:size-64">
               <img
                 src="/brand.svg"
-                alt="Boilerplate brand"
+                alt="CV Match brand"
                 className="h-20 w-20 md:h-32 md:w-32"
               />
             </div>

@@ -1,233 +1,194 @@
-# Selleo Boilerplate
+# CV Match
 
-Modern full-stack starter kit combining a NestJS API, React Router 7 web app, and shared tooling (emails, lint rules, TypeScript configs) in a single pnpm workspace. Use it to launch new projects quickly with local HTTPS, auth, testing, and CI already wired in.
+AI assistant for recruiters built on the NestJS API + React Router 7 SPA in a pnpm monorepo.
 
-<img width="1783" height="1005" alt="Main page screenshot" src="https://github.com/user-attachments/assets/3dc21a6b-5b60-44b0-b267-61631d9f2294" />
+A recruiter uploads a candidate's **CV** (PDF, DOCX, TXT or Markdown) and provides a **job description**
+(pasted text or file). The API stores the files in S3-compatible storage, queues a **background job** in BullMQ,
+extracts the text, asks **Claude** for a structured assessment and exposes the result to the SPA, which polls
+for progress and renders the report.
+
+| Layer | What it does |
+| ----- | ------------ |
+| Upload | Drag & drop CV + job description, 10 MB limit, type validation on both ends |
+| Background processing | BullMQ worker: `pending → extracting → analyzing → completed / failed`, progress persisted per analysis, visible in Bull Board |
+| AI | Claude (`claude-opus-5` by default) with structured JSON output validated by TypeBox; a deterministic `mock` adapter for local dev/tests |
+| Report | Match score, verdict, requirements coverage (matched / missing), strengths, gaps, red flags, CV feedback for the candidate, tailored interview questions grouped by category |
 
 ---
 
 ## Table of Contents
 
 1. [Quickstart](#quickstart)
-2. [Tech Stack & Features](#tech-stack--features)
-3. [Monorepo Layout](#monorepo-layout)
-4. [Prerequisites](#prerequisites)
-5. [Environment Setup](#environment-setup)
-6. [Local Development](#local-development)
-7. [Tooling Commands](#tooling-commands)
-8. [Infrastructure Notes](#infrastructure-notes)
-9. [CI & Deployment](#ci--deployment)
-10. [Maintenance Tips](#maintenance-tips)
-11. [Updating Existing Apps](#updating-existing-apps)
-12. [Screenshots](#screenshots)
-13. [Legal Notice](#legal-notice)
+2. [How it works](#how-it-works)
+3. [Project layout](#project-layout)
+4. [API](#api)
+5. [Environment variables](#environment-variables)
+6. [Tooling commands](#tooling-commands)
+7. [Testing](#testing)
+8. [Troubleshooting](#troubleshooting)
+9. [Boilerplate notes](#boilerplate-notes)
 
 ---
 
 ## Quickstart
 
-1. Install the required tooling (see [Prerequisites](#prerequisites)).
-2. Install dependencies:
+1. Install tooling: Node ≥ 24.8 (`.nvmrc` pins 24.8.0, run `nvm install` or use any 24.x), pnpm 10,
+   Docker with Compose v2, [Caddy](https://caddyserver.com/docs/install) for local HTTPS (`brew install caddy`).
+2. Install dependencies and build shared packages. Use **pnpm only**: the workspace uses `workspace:*`
+   dependencies, so `npm install` fails with `Unsupported URL Type "workspace:"`.
    ```sh
    pnpm install
+   pnpm build-email && pnpm build-shared
    ```
-3. Bootstrap environment files:
+3. Bootstrap environment files and set your AI credentials:
    ```sh
    cp apps/api/.env.example apps/api/.env
    cp apps/web-app/.env.example apps/web-app/.env
+   # in apps/api/.env: ANTHROPIC_API_KEY=sk-ant-...   (or AI_ADAPTER=mock to run without a key)
    ```
-4. Start infrastructure services:
+4. Start Postgres, Redis, RustFS (S3) and Mailpit:
    ```sh
    docker compose up -d
    ```
-5. Run the reverse proxy once to trust the local certificates:
+5. Run migrations (creates `cv_analysis` and the auth/file tables):
    ```sh
-   cd apps/reverse-proxy
-   caddy run
+   pnpm db:migrate
    ```
-   Follow the interactive prompts; future runs happen automatically via `pnpm dev`.
-6. From the repo root, launch everything:
+6. First run only, trust the local HTTPS certificates. Caddy generates a local root CA for
+   `*.cvmatch.localhost` and asks for your system password to add it to the OS trust store (macOS Keychain).
+   Accept the prompt, wait until Caddy reports it is serving, then stop it with `Ctrl+C`; `pnpm dev` starts
+   the proxy itself from now on.
+   ```sh
+   cd apps/reverse-proxy && caddy run
+   ```
+   If the browser still warns about the certificate, run `caddy trust` in the same folder or restart the browser.
+7. From the repo root, start everything (API on port 3000, web on 5173, Caddy in front of both):
    ```sh
    pnpm dev
    ```
 
----
+| Service | URL |
+| ------- | --- |
+| Web app | https://app.cvmatch.localhost |
+| API | https://api.cvmatch.localhost |
+| Swagger | https://api.cvmatch.localhost/api |
+| Bull Board (queues) | https://api.cvmatch.localhost/queues (user `admin`, password `BULLBOARD_PASSWORD`) |
+| Mailpit | https://mailbox.cvmatch.localhost |
 
-## Tech Stack & Features
-
-| Area        | Highlights |
-| ----------- | ---------- |
-| **API**     | NestJS + TypeScript, schema validation via TypeBox, Better Auth for authentication/authorization, generated OpenAPI spec, role-based access control. |
-| **Web**     | React 19 SPA on React Router 7 and Vite, Tailwind CSS v4 with shadcn/ui primitives, generated API client for consistent typing. |
-| **Platform**| Local HTTPS with Caddy, shared packages for email templates and configurations, turborepo orchestration, pnpm monorepo layout. |
-| **Quality** | Vitest-based unit and e2e setups for both API and web, GitHub Actions for lint/test on PRs, deploy workflow scaffolded for AWS. |
-
----
-
-## Monorepo Layout
-
-| Path                  | Description |
-| --------------------- | ----------- |
-| `apps/api`            | NestJS backend (package name: `boilerplate-api`). |
-| `apps/web-app`        | React Router SPA on Vite (`boilerplate-web-app`). |
-| `apps/reverse-proxy`  | Caddy configuration enabling local HTTPS domains. |
-| `packages/email-templates` | React email templates compiled for transactional emails. |
-| `packages/config-eslint`   | Shared ESLint configuration (`@repo/eslint-config`). |
-| `packages/typescript-config` | Reusable `tsconfig` bases (`@repo/typescript-config`). |
-| `packages/shared`     | Cross-cutting shared utilities and data structures. |
+Sign up at `/auth`, then open **Recruiting → New analysis**.
 
 ---
 
-## Prerequisites
+## How it works
 
-Verify/install the tooling below before running the stack:
-
-- Node.js ≥ 24.8.0 (check `.tool-versions` if using `asdf`).
-- pnpm 10.15.x (installed globally or via `corepack enable`).
-- Docker Desktop or Docker Engine + Docker Compose V2.
-- Caddy (for local HTTPS certificates). macOS users can `brew install caddy`; Linux/WSL users should follow the [official guide](https://caddyserver.com/docs/install).
-- Optional but recommended: Mailhog UI available once Docker is running (`localhost:8025`).
-
----
-
-## Environment Setup
-
-1. **Environment variables**
-   - Copy `.env.example` files for both API and web as shown in the [Quickstart](#quickstart).
-   - Adjust secrets (JWT keys, SMTP, etc.) as needed.
-
-2. **Database & Mailhog**
-   ```sh
-   docker compose up -d
-   ```
-   - Default Postgres connection from `docker-compose.yml`: host `localhost`, port `5432`, db `boilerplate`, password `boilerplate`.
-
-3. **Reverse proxy (first run only)**
-   ```sh
-   cd apps/reverse-proxy
-   caddy run
-   ```
-   - Accept certificate prompts to enable the `*.boilerplate.localhost` domains.
-
-4. **Migrations**
-   ```sh
-   pnpm db:migrate
-   ```
-   Run once after the database is up to align schema.
-
----
-
-## Local Development
-
-Start all apps from the repo root:
-
-```sh
-pnpm dev
+```
+ SPA (React Router 7)                 API (NestJS)                              Worker (BullMQ)
+ ───────────────────                  ────────────                              ───────────────
+ POST multipart {cv, jobDescription   ─► store files (FileStorageService → S3)
+      | jobDescriptionText, title}       insert cv_analysis(status=pending)
+                                          queue.add(ANALYZE_CV, {analysisId}) ─► status=extracting (20%)
+ GET /cv-analyses/:id  ◄─ poll 2s ─┐                                              download from S3, unpdf / mammoth
+                                   │                                              status=analyzing (55%)
+                                   │                                              CvAiAdapter.analyze() → Claude
+                                   │                                              validate JSON (TypeBox), clamp score
+                                   └──────────────────────────────────────────── status=completed (100%) + result
+                                                                                  on error: status=failed + errorMessage
 ```
 
-You can also target individual workspaces:
-
-- API only: `pnpm --filter boilerplate-api dev`
-- Web only: `pnpm --filter boilerplate-web-app dev`
-- Reverse proxy reload: `pnpm --filter reverse-proxy dev`
-
-**Local URLs**
-
-| Service  | URL |
-| -------- | --- |
-| Web App  | https://app.boilerplate.localhost |
-| API      | https://api.boilerplate.localhost |
-| Swagger  | https://api.boilerplate.localhost/api |
-| Mailhog  | https://mailbox.boilerplate.localhost |
+- **`apps/api/src/cv-analysis`** owns the feature end to end: Drizzle schema, TypeBox DTOs, controller, service,
+  BullMQ producer/consumer, text extraction and the AI adapters.
+- The **result schema** (`schemas/cv-analysis.schema.ts`) is a TypeBox object that is used three times: as the API
+  response DTO, as the JSON schema sent to Claude via `output_config.format`, and to validate what comes back.
+- The **`CvAiAdapter`** abstraction has two implementations selected with `AI_ADAPTER`:
+  `AnthropicCvAiAdapter` (real model, prompt caching on the system prompt, server-side refusal fallbacks enabled)
+  and `MockCvAiAdapter` (keyword overlap, no network). Tests run with the mock.
+- The SPA polls list/detail queries every 2 s while any analysis is `pending`/`extracting`/`analyzing`
+  (`refetchInterval` in `app/api/queries/useCvAnalyses.ts`).
 
 ---
 
-## Tooling Commands
+## Project layout
 
-**Database**
-- Generate migration: `pnpm db:generate -- --name your_migration_name`
-- Run migrations: `pnpm db:migrate`
-
-**Client Generation**
-- Update the typed API client: `pnpm generate:client`
-
-**Emails**
-- Manual rebuild (normally handled by turborepo):  
-  ```sh
-  pnpm run --filter email-templates build
-  ```
-
-**Quality**
-- Lint: `pnpm lint`
-- Format: `pnpm format`
-- Type-check API: `pnpm typecheck:api`
-- Test web: `pnpm test:web`
-- Test web e2e: `pnpm test:web:e2e`
-- Test API: `pnpm test:api`
-- Test API e2e: `pnpm test:api:e2e`
+| Path | Description |
+| ---- | ----------- |
+| `apps/api/src/cv-analysis` | CV analysis feature (schema, controller, service, queue, AI, text extraction, tests) |
+| `apps/api/src/file-storage` | S3 storage adapter, extended with `downloadFile` for the worker |
+| `apps/api/src/storage/migrations/0003_cv_analysis_init.sql` | Migration for the `cv_analysis` table and status enum |
+| `apps/web-app/app/modules/CvAnalysis` | Pages (`/dashboard/cv-analyses`, `/new`, `/:id`) and components (dropzone, timeline, score ring, report) |
+| `apps/web-app/app/api/cv-analysis.*` + `queries/`, `mutations/` | Typed API adapter and TanStack Query hooks |
+| `apps/web-app/app/locales/{en,pl}.json` | UI copy for the module in English and Polish |
+| `apps/reverse-proxy` | Caddy config, domains renamed to `*.cvmatch.localhost` |
+| `packages/*` | Shared configs and email templates from the boilerplate |
 
 ---
 
-## Infrastructure Notes
+## API
 
-- Start from the terraform examples in [Selleo/terraform-aws-modules](https://github.com/Selleo/terraform-aws-modules).
-- Recommended directory layout:
-  ```
-  terraform/
-    modules/         # copy reusable modules here
-    environments/
-      dev/
-      staging/
-      production/
-  ```
-- Document any environment-specific variables in the corresponding Terraform environment folder README.
+All routes are versioned under `/api/v1` and require a Better Auth session cookie.
 
----
+| Method | Path | Description |
+| ------ | ---- | ----------- |
+| `POST` | `/cv-analyses` | `multipart/form-data`: `cv` (file, required), `jobDescription` (file) **or** `jobDescriptionText` (≥ 30 chars), `title` (optional). Returns the analysis in `pending` state. |
+| `GET` | `/cv-analyses` | Current user's analyses, newest first, with `matchScore` when completed |
+| `GET` | `/cv-analyses/:id` | Full detail including `result` |
+| `POST` | `/cv-analyses/:id/retry` | Re-queue a `failed` analysis |
+| `DELETE` | `/cv-analyses/:id` | Delete the analysis and its files (not while processing) |
 
-## CI & Deployment
-
-- GitHub Actions run linting and tests on every pull request.
-- Deploy workflow triggers on pushes to `main`; supply your own AWS credentials/secrets before enabling.
-- Add new jobs (e.g., migrations, smoke tests) by extending workflows in `.github/workflows/`.
+Run `pnpm generate:client` with the API running to refresh `apps/web-app/app/api/generated-api.ts`; the module
+currently talks to these endpoints through the hand-written adapter in `app/api/cv-analysis.api.ts`.
 
 ---
 
-## Maintenance Tips
+## Environment variables
 
-- Regenerate the Swagger client (`pnpm generate:client`) whenever API DTOs change.
-- Keep migrations in sync with feature branches to avoid drift; run `pnpm db:migrate` after each pull.
-- Update shared configs (`packages/config-eslint`, `packages/typescript-config`) centrally to propagate standards across workspaces.
+New in this project (see `apps/api/.env.example` for the boilerplate ones):
 
----
-
-## Updating Existing Apps
-
-Use the curated update prompts and diffs in `/updates` whenever you need to bring an older project onto the newest boilerplate release:
-
-- **Take the prompt**: Open `updates/prompt.md`, adjust any metadata (e.g., repo URL, version), and copy the whole instruction block—this is what you paste into Codex/Cursor/Claude Code to describe the upgrade workflow.
-- **Copy the newest update diff**: Grab the latest file under `updates/<version>/<version>-update-diff.md` (right now `updates/1.6.0/1.6.0-update-diff.md`) so the assistant sees every code change required for the release.
-- **Apply it via your AI helper**: Feed both the prompt and the diff into Codex, Cursor, or Claude Code, let it apply the patch set, then review, run tests, and commit once everything passes.
+| Variable | Default | Description |
+| -------- | ------- | ----------- |
+| `AI_ADAPTER` | `anthropic` | `anthropic` calls Claude, `mock` runs a deterministic keyword-overlap scorer |
+| `ANTHROPIC_API_KEY` | — | Required when `AI_ADAPTER=anthropic` |
+| `ANTHROPIC_MODEL` | `claude-opus-5` | Any current Claude model id |
+| `PORT` | `3000` | API listen port; change it when 3000 is taken (Caddy expects 3000, so adjust `apps/reverse-proxy/Caddyfile` too) |
 
 ---
 
-## Screenshots
+## Tooling commands
 
-Auth Page  
-<img width="1790" height="999" alt="Authentication page screenshot" src="https://github.com/user-attachments/assets/c5da3660-c119-4875-8648-70fc77927969" />
-
-Dashboard  
-<img width="1788" height="1004" alt="Dashboard screenshot" src="https://github.com/user-attachments/assets/e4586368-12f6-4f5f-85f5-16b0928d9145" />
+- `pnpm dev` / `pnpm build` / `pnpm lint` / `pnpm format`
+- `pnpm db:generate -- --name <migration>` / `pnpm db:migrate` / `pnpm --filter cv-match-api db:studio`
+- `pnpm generate:client` regenerates the Swagger client
+- `pnpm typecheck:api`, `pnpm --filter cv-match-web tsc`
 
 ---
 
-## License
+## Testing
 
-See `LICENSE`.
+```sh
+pnpm test:api          # API unit tests (DB-free specs in src/cv-analysis/__tests__ run without infrastructure)
+pnpm test:api:e2e      # API e2e, needs Postgres (DATABASE_TEST_URL) + Redis; S3 is replaced in-memory
+pnpm test:web          # web unit/component tests (vitest + Testing Library)
+```
 
-## About Selleo
+The CV analysis e2e spec (`cv-analysis.controller.e2e-spec.ts`) uploads a text CV, waits for the BullMQ job to
+complete and asserts on the stored result and per-user isolation.
 
-![selleo](https://raw.githubusercontent.com/Selleo/selleo-resources/master/public/github_footer.png)
+---
 
-Software development teams with an entrepreneurial sense of ownership at their core delivering great digital products and building culture people want to belong to. We are a community of engaged co-workers passionate about crafting impactful web solutions which transform the way our clients do business.
+## Troubleshooting
 
-All names and logos for [Selleo](https://selleo.com/about) are trademark of Selleo Labs Sp. z o.o. (formerly Selleo Sp. z o.o. Sp.k.)
+- **`Unsupported URL Type "workspace:"`**: you ran `npm install`. Remove any `package-lock.json` it created and use `pnpm install`.
+- **`engines` warning or syntax errors on start**: your shell is on an older Node. Run `nvm use` (or `nvm install`) to switch to Node 24.
+- **`EADDRINUSE :3000`**: another process owns port 3000. Set `PORT=<free port>` in `apps/api/.env` and update the `api.cvmatch.localhost` upstream in `apps/reverse-proxy/Caddyfile`.
+- **Browser rejects `https://*.cvmatch.localhost`**: the local CA is not trusted yet. Run `cd apps/reverse-proxy && caddy trust`, then restart the browser.
+- **`ANTHROPIC_API_KEY is required when AI_ADAPTER=anthropic`**: set the key in `apps/api/.env`, or use `AI_ADAPTER=mock` to run the whole pipeline with a deterministic scorer.
+- **Stale `.env` or Docker volumes from the Selleo boilerplate**: database, password, bucket, domains and volume names changed (see below). Recreate `.env` from `.env.example` and run `docker compose down -v && docker compose up -d && pnpm db:migrate`.
+- **Analyses stay `pending`**: the BullMQ worker cannot reach Redis. Check `docker compose ps` and `REDIS_URL`; job state is visible in Bull Board at `/queues`.
+
+---
+
+## Boilerplate notes
+
+Infrastructure, auth, CI and deployment are inherited from the Selleo boilerplate; see
+[`apps/api/README.md`](apps/api/README.md), [`apps/web-app/README.md`](apps/web-app/README.md) and
+[`docker-compose.yml`](docker-compose.yml). Package names (`cv-match-api`, `cv-match-web`, `cv-match-reverse-proxy`), local domains (`*.cvmatch.localhost`),
+database (`cv_match`) and bucket (`cv-match-prod`) names were renamed from the boilerplate defaults.

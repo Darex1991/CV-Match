@@ -5,7 +5,7 @@
       "register": "Utwórz konto"
     },
     "subheadings": {
-      "login": "Zaloguj się do konta Boilerplate",
+      "login": "Zaloguj się do konta CV Match",
       "register": "Wpisz swoje dane, aby zacząć"
     },
     "fields": {
@@ -120,8 +120,8 @@
   },
   "landing": {
     "meta": {
-      "title": "Boilerplate | Starter React + NestJS",
-      "description": "Uruchom szybciej kolejny produkt SaaS dzięki gotowemu starterowi React + NestJS od Selleo."
+      "title": "CV Match | Screening CV wspierany AI",
+      "description": "Wgraj CV i opis stanowiska. CV Match przetwarza oba dokumenty w tle i zwraca ocenę dopasowania, luki oraz pytania na rozmowę."
     },
     "layout": {
       "nav": {
@@ -143,40 +143,40 @@
       }
     },
     "hero": {
-      "badge": "Startuj szybciej i pewniej",
-      "title": "Gotowy produkcyjnie szablon fullstack od Selleo",
-      "description": "Boilerplate daje Twojemu zespołowi nowoczesny frontend, bezpieczny backend i sprawdzone wzorce, dzięki którym skupisz się na produkcie, a nie na konfiguracji.",
-      "primaryCta": "Utwórz konto",
-      "secondaryCta": "Zobacz demo",
+      "badge": "Asystent AI dla rekruterów",
+      "title": "Oceniaj CV względem stanowiska w minuty, nie godziny",
+      "description": "Wgraj CV kandydata i wklej opis stanowiska. CV Match wyciągnie treść, poprosi Claude o porównanie i odda ocenę dopasowania, mocne strony, luki i pytania na rozmowę.",
+      "primaryCta": "Załóż konto",
+      "secondaryCta": "Zobacz, jak to działa",
       "highlights": {
-        "auth": "Gotowe auth, dashboard i CLI",
-        "stack": "Typesafe stack React + NestJS"
+        "auth": "Przetwarzanie w tle z podglądem postępu",
+        "stack": "CV w PDF, DOCX i tekście"
       }
     },
     "features": {
-      "title": "Wszystko, czego zespół potrzebuje do szybkiego startu",
-      "description": "Buduj na skalowalnym stacku. Podejmujemy kluczowe decyzje produkcyjne, aby Twój zespół mógł skupić się na wartości dla klientów od pierwszego dnia.",
+      "title": "Wszystko, czego potrzebuje pierwszy screening",
+      "description": "Od uploadu do przygotowania rozmowy w jednym przepływie.",
       "items": {
         "authSecurity": {
-          "title": "Gotowe auth i bezpieczeństwo",
-          "description": "Logowanie e-mail, passwordless, Google OAuth, role i uprawnienia już skonfigurowane."
+          "title": "Upload i parsowanie",
+          "description": "Wrzuć CV w PDF, DOCX lub tekście oraz ogłoszenie. Pliki trafiają do object storage i są parsowane przez workera w tle."
         },
         "dashboardFoundation": {
-          "title": "Fundament dashboardu",
-          "description": "Responsywny layout, wzorce pobierania danych i zestaw UI gotowe od pierwszego dnia."
+          "title": "Raport dopasowania AI",
+          "description": "Claude zwraca ustrukturyzowany raport: ocenę dopasowania, pokrycie wymagań, mocne strony, luki i sygnały ostrzegawcze."
         },
         "developerErgonomics": {
-          "title": "Ergonomia pracy dewelopera",
-          "description": "Czysta architektura, typowane API, konfiguracja testów i ulepszenia DX w pakiecie."
+          "title": "Gotowy na rozmowę",
+          "description": "Dopasowane pytania techniczne, behawioralne i weryfikujące luki, plus feedback do CV, który możesz przekazać kandydatowi."
         }
       }
     },
     "pricing": {
-      "title": "Prosty cennik na start",
-      "description": "Szablon startowy jest open source. Hostuj samodzielnie za darmo lub współpracuj z Selleo przy wdrożeniu, funkcjach niestandardowych i strategii produktu.",
-      "amount": "$0",
-      "amountNote": "za szablon",
-      "additional": "Potrzebujesz dedykowanego zespołu? Skontaktuj się z nami, aby dopasować stack do Twojego produktu.",
+      "title": "Open source starter",
+      "description": "CV Match to demo zbudowane na boilerplate Selleo. Uruchom u siebie, podłącz klucz Anthropic API i dopasuj do własnego procesu rekrutacji.",
+      "amount": "0 zł",
+      "amountNote": "self-hosted",
+      "additional": "Płacisz tylko za wywołania Claude API, które wykonują Twoje analizy.",
       "contactCta": "Porozmawiaj z Selleo",
       "codebaseCta": "Przejrzyj repozytorium"
     },
@@ -220,5 +220,178 @@
   "about": {
     "metaTitle": "Strona o nas",
     "heading": "Strona o nas"
+  },
+  "cvAnalysis": {
+    "nav": {
+      "group": "Rekrutacja",
+      "dashboard": "Przegląd",
+      "analyses": "Analizy CV",
+      "new": "Nowa analiza"
+    },
+    "status": {
+      "pending": "W kolejce",
+      "extracting": "Ekstrakcja tekstu",
+      "analyzing": "Analiza AI",
+      "completed": "Zakończona",
+      "failed": "Błąd"
+    },
+    "verdict": {
+      "strong_match": "Bardzo dobre dopasowanie",
+      "good_match": "Dobre dopasowanie",
+      "partial_match": "Częściowe dopasowanie",
+      "weak_match": "Słabe dopasowanie"
+    },
+    "actions": {
+      "new": "Nowa analiza",
+      "retry": "Powtórz",
+      "delete": "Usuń",
+      "cancel": "Anuluj",
+      "backToList": "Wróć do analiz",
+      "deleteConfirm": {
+        "title": "Usunąć tę analizę?",
+        "description": "\"{{title}}\" oraz przesłane pliki zostaną trwale usunięte."
+      }
+    },
+    "upload": {
+      "hint": "PDF, DOCX, TXT lub Markdown, do 10 MB",
+      "remove": "Usuń plik",
+      "errors": {
+        "type": "Obsługiwane są tylko pliki PDF, DOCX, TXT i Markdown.",
+        "size": "Plik jest większy niż 10 MB."
+      }
+    },
+    "form": {
+      "heading": "Nowa analiza CV",
+      "subheading": "Wgraj CV kandydata i opisz stanowisko. Analiza działa w tle, a Ty zostaniesz przeniesiony do widoku postępu.",
+      "cv": {
+        "title": "CV kandydata",
+        "description": "Dokument zostanie sparsowany i porównany z opisem stanowiska.",
+        "dropzone": "Przeciągnij CV tutaj lub kliknij, aby wybrać"
+      },
+      "title": {
+        "label": "Nazwa analizy (opcjonalnie)",
+        "placeholder": "np. Jan Kowalski - Senior Frontend",
+        "hint": "Domyślnie nazwa pliku CV."
+      },
+      "job": {
+        "title": "Opis stanowiska",
+        "description": "Wklej treść ogłoszenia lub wgraj plik.",
+        "tabs": {
+          "text": "Wklej tekst",
+          "file": "Wgraj plik"
+        },
+        "placeholder": "Wklej opis stanowiska, wymagania i mile widziane umiejętności...",
+        "dropzone": "Przeciągnij opis stanowiska tutaj lub kliknij, aby wybrać",
+        "chars": "{{count}} znaków",
+        "minChars": "Wpisz co najmniej {{min}} znaków."
+      },
+      "footnote": "Przetwarzanie zwykle trwa poniżej minuty. Możesz opuścić stronę i wrócić później.",
+      "submit": "Uruchom analizę",
+      "submitting": "Wysyłanie...",
+      "toast": {
+        "created": "Analiza dodana do kolejki. Przetwarzanie ruszyło."
+      }
+    },
+    "list": {
+      "title": "Analizy CV",
+      "description": "Wszystkie Twoje analizy, od najnowszej. Trwające odświeżają się automatycznie.",
+      "error": "Nie udało się pobrać analiz.",
+      "empty": {
+        "title": "Brak analiz",
+        "description": "Wgraj CV i opis stanowiska, aby otrzymać ocenę dopasowania, luki i pytania na rozmowę."
+      }
+    },
+    "overview": {
+      "total": "Wszystkie analizy",
+      "processing": "W trakcie",
+      "completed": "Zakończone",
+      "failed": "Z błędem",
+      "recent": {
+        "title": "Ostatnie analizy",
+        "description": "Pięć najnowszych analiz.",
+        "all": "Zobacz wszystkie",
+        "empty": "Jeszcze nic tu nie ma. Zacznij od pierwszej analizy."
+      }
+    },
+    "timeline": {
+      "progress": "Postęp przetwarzania",
+      "steps": {
+        "pending": {
+          "title": "W kolejce",
+          "description": "Czeka na wolnego workera"
+        },
+        "extracting": {
+          "title": "Ekstrakcja tekstu",
+          "description": "Odczyt CV i opisu stanowiska"
+        },
+        "analyzing": {
+          "title": "Analiza AI",
+          "description": "Claude porównuje kandydata ze stanowiskiem"
+        },
+        "completed": {
+          "title": "Gotowe",
+          "description": "Wyniki są dostępne"
+        }
+      }
+    },
+    "detail": {
+      "loading": "Ładowanie...",
+      "files": {
+        "cv": "CV",
+        "job": "Opis stanowiska"
+      },
+      "processing": {
+        "title": "Przetwarzanie",
+        "description": "Ta strona odświeża się automatycznie w trakcie analizy."
+      },
+      "failed": {
+        "title": "Analiza nie powiodła się",
+        "description": "Coś poszło nie tak podczas przetwarzania."
+      },
+      "notFound": {
+        "title": "Analiza niedostępna",
+        "description": "Mogła zostać usunięta lub należy do innego konta."
+      },
+      "jobDescription": "Użyty opis stanowiska"
+    },
+    "result": {
+      "summary": "Podsumowanie dla rekrutera",
+      "matchScore": "Dopasowanie",
+      "scoreLabel": "Dopasowanie {{score}} na 100",
+      "none": "Brak uwag.",
+      "noRedFlags": "Nie wykryto sygnałów ostrzegawczych.",
+      "profile": {
+        "heading": "Kandydat",
+        "name": "Imię i nazwisko",
+        "title": "Obecne stanowisko",
+        "experience": "Doświadczenie",
+        "years": "{{count}} lat",
+        "location": "Lokalizacja",
+        "empty": "CV nie zawiera podstawowych danych profilu."
+      },
+      "skills": {
+        "heading": "Pokrycie wymagań",
+        "description": "Jak CV odpowiada na wymagania ze stanowiska.",
+        "matched": "Spełnione ({{count}})",
+        "missing": "Brakujące ({{count}})"
+      },
+      "strengths": "Mocne strony",
+      "gaps": "Luki",
+      "redFlags": "Sygnały ostrzegawcze",
+      "feedback": {
+        "heading": "Feedback dla kandydata",
+        "description": "Sugestie, jak CV mogłoby lepiej pasować do tej roli."
+      },
+      "questions": {
+        "heading": "Pytania na rozmowę ({{count}})",
+        "description": "Dopasowane do kandydata i roli, pogrupowane według kategorii.",
+        "categories": {
+          "technical": "Techniczne",
+          "experience": "Doświadczenie",
+          "behavioral": "Behawioralne",
+          "gap_probe": "Weryfikacja luk"
+        }
+      }
+    }
   }
 }

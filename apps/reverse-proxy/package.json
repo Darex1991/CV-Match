@@ -1,5 +1,5 @@
 {
-  "name": "boilerplate_development_reverse_proxy",
+  "name": "cv-match-reverse-proxy",
   "scripts": {
     "dev": "caddy run"
   }

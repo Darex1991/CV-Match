@@ -7,10 +7,12 @@ import { UsersModule } from "./users/users.module";
 import emailConfig from "./common/configuration/email";
 import awsConfig from "./common/configuration/aws";
 import fileStorageConfig from "./common/configuration/file-storage";
+import aiConfig from "./common/configuration/ai";
 import { EmailModule } from "./common/emails/emails.module";
 import { FileStorageModule } from "./file-storage";
 import { TestConfigModule } from "./test-config/test-config.module";
 import { HealthModule } from "./health/health.module";
+import { CvAnalysisModule } from "./cv-analysis/cv-analysis.module";
 import { AuthModule } from "./auth/auth.module";
 import { AuthService } from "./auth/auth.service";
 import { buildBetterAuthInstance } from "./lib/better-auth-options";
@@ -23,7 +25,7 @@ import type { DatabasePg } from "./common";
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [database, emailConfig, awsConfig, fileStorageConfig],
+      load: [database, emailConfig, awsConfig, fileStorageConfig, aiConfig],
       isGlobal: true,
     }),
     DrizzlePostgresModule.registerAsync({
@@ -64,6 +66,7 @@ import type { DatabasePg } from "./common";
     UsersModule,
     EmailModule,
     FileStorageModule,
+    CvAnalysisModule,
     TestConfigModule,
     HealthModule,
   ],

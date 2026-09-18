@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import {
   DeleteObjectCommand,
+  GetObjectCommand,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
@@ -15,7 +16,9 @@ export class S3Adapter extends FileStorageAdapter {
 
   constructor(private readonly configService: ConfigService) {
     super();
-    const bucket = this.configService.get<string>("fileStorage.AWS_BUCKET_NAME");
+    const bucket = this.configService.get<string>(
+      "fileStorage.AWS_BUCKET_NAME",
+    );
 
     if (!bucket) {
       throw new Error("Missing AWS_BUCKET_NAME configuration");
@@ -48,6 +51,17 @@ export class S3Adapter extends FileStorageAdapter {
   async deleteFile(key: string): Promise<void> {
     const command = new DeleteObjectCommand({ Bucket: this.bucket, Key: key });
     await this.client.send(command);
+  }
+
+  async downloadFile(key: string): Promise<Buffer> {
+    const command = new GetObjectCommand({ Bucket: this.bucket, Key: key });
+    const response = await this.client.send(command);
+
+    if (!response.Body) {
+      throw new Error(`Object "${key}" has no body`);
+    }
+
+    return Buffer.from(await response.Body.transformToByteArray());
   }
 
   private createClient() {
